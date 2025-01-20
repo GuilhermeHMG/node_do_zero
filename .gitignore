@@ -1,0 +1,9 @@
+# Ignore the .vscode directory
+.vscode/
+
+# Ignore the package.json and package-lock.json files
+package.json
+package-lock.json
+
+# Ignore the .env file
+.env
