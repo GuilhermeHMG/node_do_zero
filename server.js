@@ -29,20 +29,21 @@
  *
  */
 import { fastify } from "fastify";
-import { databaseMemory } from "./database-memory.js";
+// import { databaseMemory } from "./database-memory.js";
+import { DatabasePostgres } from "./database-postgres.js";
 import { title } from "node:process";
 
 const server = fastify();
 
-const database = new databaseMemory();
+const database = new DatabasePostgres();
 
 // GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD
 //  Request Body
 
-server.post("/videos", (request, reply) => {
+server.post("/videos", async (request, reply) => {
   const { title, description, duration } = request.body;
 
-  database.create({
+  await database.create({
     title: title,
     description: description,
     duration: duration,
@@ -51,10 +52,10 @@ server.post("/videos", (request, reply) => {
   return reply.status(201).send();
 });
 
-server.get("/videos", (request) => {
+server.get("/videos", async (request) => {
   const search = request.query.search;
 
-  const videos = database.list(search);
+  const videos = await database.list(search);
 
   return videos;
 });
@@ -81,5 +82,5 @@ server.delete("/videos/:id", (request, reply) => {
 });
 
 server.listen({
-  port: 3333,
+  port: process.env.PORT ?? 3333,
 });
